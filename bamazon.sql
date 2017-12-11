@@ -17,6 +17,7 @@ CREATE TABLE product_t (
     PRIMARY KEY (item_id)
 );
 
+-- Create a table to hold departments' data
 -- CREATE TABLE department_t (
 --     department_ID INTEGER NOT NULL,
 --     department_name VARCHAR(100) NOT NULL,
@@ -25,9 +26,19 @@ CREATE TABLE product_t (
 --     PRIMARY KEY (department_id)
 -- );
 
+-- alter the department table add a column
+-- alter TABLE department_t
+-- add column product_sales decimal (18,2) DEFAULT 0;
+
+-- alter the product  add a column
+-- alter TABLE product_t
+-- add column stock_quantity  integer (18) DEFAULT 0;
+
+-- alter the department table add a column
 -- alter TABLE department_t
 -- add column product_sales decimal (18,2) DEFAULT 0;
 -- 
+-- Add a foreign key for referential integrity between department and product tables
 -- alter table product_t
 -- add constraint fk_dept_id foreign key (department_id) 
 -- REFERENCES department_t(department_ID);
