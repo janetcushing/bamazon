@@ -6,6 +6,7 @@ CREATE DATABASE bamazonDB;
 -- Use this db for the following statements --
 use bamazonDB;
 
+-- Create a table to hold products' data
 CREATE TABLE product_t (
     item_ID INTEGER AUTO_INCREMENT NOT NULL,
     product_name VARCHAR(100) NOT NULL,
