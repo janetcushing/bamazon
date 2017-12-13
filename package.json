@@ -1,0 +1,23 @@
+{
+  "name": "bamazon",
+  "version": "1.0.0",
+  "description": "an amazon-like shopping application\"",
+  "main": "bamazonCustomer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/janetcushing/bamazon.git"
+  },
+  "author": "Janet Cushing",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/janetcushing/bamazon/issues"
+  },
+  "homepage": "https://github.com/janetcushing/bamazon#readme",
+  "dependencies": {
+    "inquirer": "^4.0.1",
+    "mysql": "^2.15.0"
+  }
+}
