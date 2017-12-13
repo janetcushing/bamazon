@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/janetcushing/bamazon#readme",
   "dependencies": {
+    "cli-table": "^0.3.1",
+    "currency-formatter": "^1.3.1",
     "inquirer": "^4.0.1",
     "mysql": "^2.15.0"
   }
