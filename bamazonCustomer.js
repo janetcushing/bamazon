@@ -153,7 +153,6 @@ function checkStock(selection) {
     productQuery =
         'select product_id, product_name, price, stock_quantity from bamazon_db.product_t where product_id = ' +
         selection.product_id;
-    console.log(productQuery);
 
     connection.query(productQuery,
         function (err, res) {

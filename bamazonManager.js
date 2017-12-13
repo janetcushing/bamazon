@@ -82,7 +82,6 @@ function inquireManagerOption() {
 // this function displays the products for sale.
 //-----------------------------------------------//
 function displayProductsForSale() {
-    console.log("im in displayProductsForSale");
     productQuery = "SELECT * FROM bamazon_db.product_t ORDER BY product_id";
     connection.query(productQuery,
         function (err, res) {
@@ -116,7 +115,6 @@ function displayProductsForSale() {
 // this function displays the products with low inventory for sale.
 //------------------------------------------------------------------//
 function displayLowInventory() {
-    console.log("im in displayProductsForSale");
     productQuery = "SELECT * FROM bamazon_db.product_t " +
         " WHERE stock_quantity < 35 ORDER BY product_id";
     connection.query(productQuery,
