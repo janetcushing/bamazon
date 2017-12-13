@@ -42,14 +42,14 @@ var connection = mysql.createConnection({
 // this function kicks off the application.
 // it opens the connection with the database
 // and sets up the first query.  It calls
-// displayItems().
+// displayProductsForSale().
 //-------------------------------------------//
 function beginShopping() {
     connection.connect(function (err) {
         if (err) throw err;
         console.log("connected as id " + connection.threadId);
         productQuery = "SELECT * FROM bamazon_db.product_t order by product_id";
-        displayItems(productQuery);
+        displayProductsForSale(productQuery);
     });
 }
 
@@ -62,7 +62,7 @@ function beginShopping() {
 function continueShopping() {
     console.log("IM IN continueShopping()");
     productQuery = "SELECT * FROM bamazon_db.product_t order by product_id";
-    displayItems(productQuery);
+    displayProductsForSale(productQuery);
 }
 
 //-------------------------------------------//
@@ -70,8 +70,8 @@ function continueShopping() {
 // then it kicks off the function which asks
 // the user which product they would like to buy
 //-------------------------------------------//
-function displayItems(productQuery) {
-    console.log("im in displayItems");
+function displayProductsForSale(productQuery) {
+    console.log("im in displayProductsForSale()");
     connection.query(productQuery,
         function (err, res) {
             if (err) {
