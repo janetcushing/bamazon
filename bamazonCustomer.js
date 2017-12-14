@@ -60,7 +60,6 @@ function beginShopping() {
 // the products
 //-------------------------------------------//
 function continueShopping() {
-    console.log("IM IN continueShopping()");
     productQuery = "SELECT * FROM bamazon_db.product_t order by product_id";
     displayProductsForSale(productQuery);
 }
@@ -71,17 +70,14 @@ function continueShopping() {
 // the user which product they would like to buy
 //-------------------------------------------//
 function displayProductsForSale(productQuery) {
-    console.log("im in displayProductsForSale()");
     connection.query(productQuery,
         function (err, res) {
             if (err) {
                 throw err;
                 console.log(err);
             }
-            // console.log("i have executed the query");
-            // console.log("res = " + JSON.stringify(res, undefined, 2));
             var items = [];
-
+            productTable.length = 0;
             console.log("-----------------------------------");
             console.log(" ");
             for (let i = 0; i < res.length; i++) {
@@ -151,9 +147,9 @@ function inquireWhichProduct(items) {
 //-------------------------------------------//
 function checkStock(selection) {
     productQuery =
-        'select product_id, product_name, price, stock_quantity from bamazon_db.product_t where product_id = ' +
+        "SELECT product_id, product_name, price, stock_quantity, product_sales " +
+        "FROM bamazon_db.product_t WHERE product_id = " +
         selection.product_id;
-
     connection.query(productQuery,
         function (err, res) {
             if (err) {
@@ -162,23 +158,32 @@ function checkStock(selection) {
             }
             if (res[0].stock_quantity >= selection.count) {
                 let cost = parseFloat(selection.count) * parseFloat(res[0].price);
-                console.log("+++++++++++++++++++++++++++++++++++")
+                let product_sales_updated = res[0].product_sales + cost
+                console.log("\n+++++++++++++++++++++++++++++++++++");
                 console.log("Your item and cost: ");
                 console.log("ITEM ID:       " + res[0].product_id);
                 console.log("ITEM NAME:     " + res[0].product_name);
-                console.log("ITEM COST:     " + currencyFormatter.format(res[0].price,
-                    {code: 'USD'}));
+                console.log("ITEM COST:     " + currencyFormatter.format(res[0].price, {
+                    code: 'USD'
+                }));
                 console.log("ITEM QUANTITY: " + selection.count);
-                console.log("TOTAL COST:    " + currencyFormatter.format(cost, 
-                    {code: 'USD'}));
-                console.log("+++++++++++++++++++++++++++++++++++")
+                console.log("TOTAL COST:    " + currencyFormatter.format(cost, {
+                    code: 'USD'
+                }));
+                console.log("+++++++++++++++++++++++++++++++++++\n");
                 orderTotal = orderTotal + parseFloat(cost);
                 var currentOrder = [res[0].product_id,
                     res[0].product_name,
-                    res[0].price,
+                    currencyFormatter.format(res[0].price, {
+                        code: 'USD'
+                    }),
                     selection.count,
-                    cost,
-                    orderTotal
+                    currencyFormatter.format(cost, {
+                        code: 'USD'
+                    }),
+                    currencyFormatter.format(orderTotal, {
+                        code: 'USD'
+                    })
                 ];
                 orderTable.push(currentOrder);
                 console.log(orderTable.toString());
@@ -187,8 +192,8 @@ function checkStock(selection) {
                     parseInt(res[0].stock_quantity) - parseInt(selection.count);
                 productQuery = 'update bamazon_db.product_t' +
                     ' set stock_quantity = ' + stock_quantity_update +
-                    ' where product_id = ' + selection.product_id;
-
+                    ' , product_sales = ' + product_sales_updated +
+                    ' where product_id = ' + res[0].product_id;
                 connection.query(productQuery,
                     function (err, res) {
                         if (err) {
