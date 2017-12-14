@@ -14,7 +14,7 @@ CREATE TABLE product_t (
     department_name VARCHAR(100),
     price DECIMAL(18 , 2 ),
 	stock_quantity INTEGER(18),
-    PRIMARY KEY (item_id)
+    PRIMARY KEY (product_id)
 );
 
 INSERT INTO `bamazon_db`.`product_t`
@@ -31,29 +31,32 @@ VALUES
 ('tupperware',102,'housewares',3.99,90),
 ('spaghetti',101,'grocery',1.59,100);
 
-select * from bamazon_db.product_t order by department_id, item_id;
-select department_id, department_name, count(*) from bamazon_db.product_t group by department_id, department_name;
+
+USE bamazon_db;
 
 -- Create a table to hold departments' data
--- CREATE TABLE department_t (
---     department_id INTEGER NOT NULL,
---     department_name VARCHAR(100) NOT NULL,
---     over_head_costs DECIMAL(18 , 2 ),
---     stock_quantity INTEGER(18),
---     PRIMARY KEY (department_id)
--- );
+CREATE TABLE department_t (
+    department_id INTEGER AUTO_INCREMENT  NOT NULL,
+    department_name VARCHAR(100) NOT NULL,
+    over_head_costs DECIMAL(18 , 2 ),
+    PRIMARY KEY (department_id)
+)
+AUTO_INCREMENT = 101
+;
 
--- alter the department table add a column
--- alter TABLE department_t
--- add column product_sales decimal (18,2) DEFAULT 0;
+INSERT INTO department_t ( department_name, over_head_costs) values ('grocery',10000);
+INSERT INTO department_t ( department_name, over_head_costs) values ('housewares',20000);
+INSERT INTO department_t ( department_name, over_head_costs) values ('tools',30000);
+INSERT INTO department_t ( department_name, over_head_costs) values ('sundries',5000);
 
--- alter the department table add a column
--- alter TABLE department_t
--- add column product_sales decimal (18,2) DEFAULT 0;
+-- ALTER the product table add a column
+ALTER TABLE product_t
+ADD COLUMN product_sales DECIMAL (18,2) DEFAULT 0;
+
 -- 
 -- Add a foreign key for referential integrity between department and product tables
--- alter table product_t
--- add constraint fk_dept_id foreign key (department_id) 
+-- ALTER TABLE product_t
+-- ADD CONSTRAINT fk_dept_id FOREIGN KEY (department_id) 
 -- REFERENCES department_t(department_id);
 
 

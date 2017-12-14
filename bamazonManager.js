@@ -22,8 +22,7 @@ var LowInventoryTable = new Table({
     colWidths: [15, 30, 15, 20]
 });
 
-var items = [];
-var productQuery;
+var productQuery = "";
 
 // connection to the bamazon_db mySQL database
 var connection = mysql.createConnection({
@@ -89,7 +88,6 @@ function displayProductsForSale() {
                 throw err;
                 console.log(err);
             }
-            var items = [];
             console.log(" ");
             console.log(" ");
             productTable.length = 0;
@@ -123,7 +121,6 @@ function displayLowInventory() {
                 throw err;
                 console.log(err);
             }
-            var items = [];
             console.log(" ");
             console.log(" ");
             LowInventoryTable.length = 0;
