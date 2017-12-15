@@ -17,7 +17,12 @@ var deptTable = new Table({
     colWidths: [15, 25, 15, 20, 20]
 });
 
-var deptQuery = "";
+var AddDeptTable = new Table({
+    head: ['DEPARTMENT ID', 'DEPARTMENT NAME', 'OVER HEAD COSTS'],
+    colWidths: [15, 30, 20]
+});
+
+var queryText = "";
 
 // connection to the bamazon_db mySQL database
 var connection = mysql.createConnection({
@@ -53,7 +58,8 @@ function inquireSupervisorOption() {
         name: "option",
         message: "What would you like to do???",
         choices: ["View Product Sales by Department",
-                  "Create New Department"]
+            "Create New Department"
+        ]
     }]).then(function (selection) {
         if (selection.option === "View Product Sales by Department") {
             displayProductSales();
@@ -69,17 +75,17 @@ function inquireSupervisorOption() {
 // this function displays the products for sale.
 //-----------------------------------------------//
 function displayProductSales() {
-    deptQuery = "SELECT "  +
-    "dept.department_id " +
-  ", dept.department_name " +
-  ", dept.over_head_costs  " +
-  ", SUM(prd.product_sales) as dept_sales" + 
-  " FROM bamazon_db.department_t dept " + 
-  " LEFT OUTER JOIN  bamazon_db.product_t prd " +
-  " ON dept.department_id = prd.department_id " +
-  " GROUP BY dept.department_id, dept.department_name, dept.over_head_costs";
-  console.log(deptQuery);
-    connection.query(deptQuery,
+    queryText = "SELECT " +
+        "dept.department_id " +
+        ", dept.department_name " +
+        ", dept.over_head_costs  " +
+        ", SUM(prd.product_sales) as dept_sales" +
+        " FROM bamazon_db.department_t dept " +
+        " LEFT OUTER JOIN  bamazon_db.product_t prd " +
+        " ON dept.department_id = prd.department_id " +
+        " GROUP BY dept.department_id, dept.department_name, dept.over_head_costs";
+    console.log(queryText);
+    connection.query(queryText,
         function (err, res) {
             if (err) {
                 throw err;
@@ -88,14 +94,21 @@ function displayProductSales() {
             console.log(" ");
             console.log(" ");
             deptTable.length = 0;
-            for (i = 0; i < res.length; i++){
+            for (i = 0; i < res.length; i++) {
                 let total_profit = res[i].dept_sales - res[i].over_head_costs;
                 deptTable.push(
                     [res[i].department_id,
-                     res[i].department_name,
-                    currencyFormatter.format(res[i].over_head_costs, {code: 'USD'}),
-                    currencyFormatter.format(res[i].dept_sales, {code: 'USD'}),
-                        currencyFormatter.format(total_profit, {code: 'USD'})]
+                        res[i].department_name,
+                        currencyFormatter.format(res[i].over_head_costs, {
+                            code: 'USD'
+                        }),
+                        currencyFormatter.format(res[i].dept_sales, {
+                            code: 'USD'
+                        }),
+                        currencyFormatter.format(total_profit, {
+                            code: 'USD'
+                        })
+                    ]
                 );
             }
             console.log(deptTable.toString());
@@ -111,41 +124,63 @@ function addNewDepartment() {
             type: "input",
             name: "dept_name",
             message: "What is the NAME of the department you would like to add??",
+            validate: function (value) {
+                if (value) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
         },
         {
             type: "input",
             name: "over_head_costs",
             message: "What are the OVER HEAD COSTS of the department??",
             validate: function (value) {
-                if (isNaN(value) == false) {
-                    return true;
-                } else {
-                    return false;
-                }
+                let valid = !isNaN(parseFloat(value));
+                return valid || 'Please enter a number';
             }
+
         }
     ]).then(function (newDept) {
-        deptQuery = "INSERT INTO bamazon_db.department_t " +
+        queryText = "INSERT INTO bamazon_db.department_t " +
             "(department_name, over_head_costs)" +
             " VALUES ( '" + newDept.dept_name + "'," +
             newDept.over_head_costs + ")";
-            console.log(deptQuery);
-        connection.query(deptQuery,
+        console.log(queryText);
+        connection.query(queryText,
             function (err, res) {
                 if (err) {
                     throw err;
                     console.log(err);
                 }
-                console.log(JSON.stringify(res));
-                console.log("-----------------------------------------------------");
-                console.log(" ");
-                console.log("New Department Added ");
-                console.log(" ");
-                console.log("-----------------------------------------------------");
-                inquireForMoreSupervising();
+                queryText = "SELECT * FROM bamazon_db.department_t " +
+                    "WHERE department_name = '" + newDept.dept_name + "'";
+                console.log(queryText);
+                connection.query(queryText,
+                    function (err, res) {
+                        if (err) {
+                            throw err;
+                            console.log(err);
+                        }
+                        console.log(JSON.stringify(res));
+                        console.log("-----------------------------------------------------");
+                        console.log(" ");
+                        AddDeptTable.push([
+                            res[0].department_id,
+                            res[0].department_name,
+                            currencyFormatter.format(res[0].over_head_costs, {
+                                code: 'USD'
+                            })
+                        ]);
+                        console.log(AddDeptTable.toString());
+                        console.log("New Department Added ");
+                        console.log(" ");
+                        console.log("-----------------------------------------------------");
+                        inquireForMoreSupervising();
+                    });
             });
     });
-
 }
 
 //--------------------------------------------------//

@@ -26,7 +26,7 @@ var orderTable = new Table({
 
 var orderTotal = 0;
 var items = [];
-var productQuery;
+var queryText;
 
 // connection to the bamazon_db mySQL database
 var connection = mysql.createConnection({
@@ -48,8 +48,8 @@ function beginShopping() {
     connection.connect(function (err) {
         if (err) throw err;
         console.log("connected as id " + connection.threadId);
-        productQuery = "SELECT * FROM bamazon_db.product_t order by product_id";
-        displayProductsForSale(productQuery);
+        queryText = "SELECT * FROM bamazon_db.product_t order by product_id";
+        displayProductsForSale(queryText);
     });
 }
 
@@ -60,17 +60,17 @@ function beginShopping() {
 // the products
 //-------------------------------------------//
 function continueShopping() {
-    productQuery = "SELECT * FROM bamazon_db.product_t order by product_id";
-    displayProductsForSale(productQuery);
+    queryText = "SELECT * FROM bamazon_db.product_t order by product_id";
+    displayProductsForSale(queryText);
 }
 
-//-------------------------------------------//
+//-------------------------------------------------//
 // this function displays the products for sale.
 // then it kicks off the function which asks
 // the user which product they would like to buy
-//-------------------------------------------//
-function displayProductsForSale(productQuery) {
-    connection.query(productQuery,
+//------------------------------------------------//
+function displayProductsForSale(queryText) {
+    connection.query(queryText,
         function (err, res) {
             if (err) {
                 throw err;
@@ -105,6 +105,8 @@ function displayProductsForSale(productQuery) {
 // this function
 // Asks the user what they want to buy
 // and then ask how much they want to buy
+// it calls thr checkStock() function to see if
+// stock is available and if it is places the order
 //--------------------------------------------------//
 function inquireWhichProduct(items) {
     inquirer.prompt([{
@@ -112,10 +114,10 @@ function inquireWhichProduct(items) {
             name: "product_id",
             message: "What is the PRODUCT ID of the item you would you like to buy??",
             validate: function (value) {
-                if (isNaN(value) == false) {
+                if (items.includes(parseInt(value))) {
                     return true;
                 } else {
-                    return false;
+                    return false || 'Please enter a valid product id';
                 }
             }
         },
@@ -124,11 +126,8 @@ function inquireWhichProduct(items) {
             name: "count",
             message: "How Many would you like to buy??",
             validate: function (value) {
-                if (isNaN(value) == false) {
-                    return true;
-                } else {
-                    return false;
-                }
+                let valid = !isNaN(parseFloat(value));
+                return valid || 'Please enter a number';
             }
         }
     ]).then(function (selection) {
@@ -137,20 +136,20 @@ function inquireWhichProduct(items) {
 
 }
 
-//-------------------------------------------//
+//-------------------------------------------------//
 // this function checks the database to 
 // confirm there is enough stock there to fill
 // the request.  It updates the database with the
 // quantity which has been sold. It prints to the 
 // console the order details and a summary of 
 // everything that has been ordered so far
-//-------------------------------------------//
+//-------------------------------------------------//
 function checkStock(selection) {
-    productQuery =
+    queryText =
         "SELECT product_id, product_name, price, stock_quantity, product_sales " +
         "FROM bamazon_db.product_t WHERE product_id = " +
         selection.product_id;
-    connection.query(productQuery,
+    connection.query(queryText,
         function (err, res) {
             if (err) {
                 throw err;
@@ -187,14 +186,13 @@ function checkStock(selection) {
                 ];
                 orderTable.push(currentOrder);
                 console.log(orderTable.toString());
-
                 let stock_quantity_update =
                     parseInt(res[0].stock_quantity) - parseInt(selection.count);
-                productQuery = 'update bamazon_db.product_t' +
+                queryText = 'update bamazon_db.product_t' +
                     ' set stock_quantity = ' + stock_quantity_update +
                     ' , product_sales = ' + product_sales_updated +
                     ' where product_id = ' + res[0].product_id;
-                connection.query(productQuery,
+                connection.query(queryText,
                     function (err, res) {
                         if (err) {
                             throw err;
@@ -208,7 +206,6 @@ function checkStock(selection) {
                 console.log("    Insufficient Quantity! ");
                 console.log(" ");
                 console.log("-----------------------------------");
-
                 inquireMoreShopping();
             }
         });
@@ -228,11 +225,11 @@ function inquireMoreShopping() {
         if (answer.shopMore) {
             continueShopping();
         } else {
-            console.log("-----------------------------------");
+            console.log("-----------------------------------------");
             console.log(" ");
-            console.log("Thank you for shopping at bamazon!!");
+            console.log("  Thank you for shopping at bamazon!!");
             console.log(" ");
-            console.log("-----------------------------------");
+            console.log("-----------------------------------------");
             connection.end();
             process.exit();
         }
