@@ -34,7 +34,7 @@ You can load both mysql database and mysql workbench from www.mysql.com/products
 On the command line type:
 
 mysql.server start  
-       (this will start upir mysql server)
+       (this will start up your mysql server)
 
 Go into MySQL Workbench.  check the server status and confirm that it is up and running.  Create a localhost connection.  Then execute the SQL statements in the file bamazon.sql.
 
