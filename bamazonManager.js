@@ -17,11 +17,6 @@ var productTable = new Table({
     colWidths: [15, 30, 15, 20]
 });
 
-// var LowInventoryTable = new Table({
-//     head: ['PRODUCT ID', 'PRODUCT NAME', 'PRODUCT PRICE', 'STOCK QUANTITY'],
-//     colWidths: [15, 30, 15, 20]
-// });
-
 var AddInventoryTable = new Table({
     head: ['PRODUCT ID', 'PRODUCT NAME', 'OLD STOCK QTY', 'NEW STOCK QTY'],
     colWidths: [15, 30, 20, 20]
@@ -31,7 +26,7 @@ var AddProductTable = new Table({
     head: ['PRODUCT ID', 'PRODUCT NAME', 'PRODUCT PRICE', 'STOCK QTY',
         'PRODUCT SALES', 'DEPT NUM', 'DEPT NAME'
     ],
-    colWidths: [15, 25, 15, 15, 15, 15, 25]
+    colWidths: [12, 20, 15, 12, 15, 12, 20]
 });
 
 var queryText = "";
@@ -228,7 +223,6 @@ function updateStockQuantity(selection) {
                 updatedStockQuantity
             ];
             AddInventoryTable.push(currentItem);
-            console.log("itemA " + currentItem);
             queryText = "UPDATE bamazon_db.product_t " +
                 " SET stock_quantity = " + updatedStockQuantity +
                 " WHERE product_id = " + res[0].product_id;
