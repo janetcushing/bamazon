@@ -21,7 +21,7 @@ var orderTable = new Table({
     head: ['PRODUCT ID', 'PRODUCT NAME', 'PRODUCT PRICE',
         'QUANTITY', 'COST', 'ORDER TOTAL'
     ],
-    colWidths: [10, 20, 10, 10, 10, 15]
+    colWidths: [13, 18, 16, 10, 15, 15]
 });
 
 var orderTotal = 0;
@@ -227,7 +227,7 @@ function inquireMoreShopping() {
         } else {
             console.log("-----------------------------------------");
             console.log(" ");
-            console.log("  Thank you for shopping at bamazon!!");
+            console.log("  Thank you for shopping at Bamazon!!");
             console.log(" ");
             console.log("-----------------------------------------");
             connection.end();

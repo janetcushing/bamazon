@@ -14,7 +14,7 @@ var Table = require('cli-table');
 
 var deptTable = new Table({
     head: ['DEPARTMENT ID', 'DEPARTMENT NAME', 'OVER HEAD COSTS', 'PRODUCT SALES', 'TOTAL PROFIT'],
-    colWidths: [15, 25, 15, 20, 20]
+    colWidths: [15, 25, 20, 20, 20]
 });
 
 var AddDeptTable = new Table({
@@ -84,7 +84,6 @@ function displayProductSales() {
         " LEFT OUTER JOIN  bamazon_db.product_t prd " +
         " ON dept.department_id = prd.department_id " +
         " GROUP BY dept.department_id, dept.department_name, dept.over_head_costs";
-    console.log(queryText);
     connection.query(queryText,
         function (err, res) {
             if (err) {
@@ -147,7 +146,6 @@ function addNewDepartment() {
             "(department_name, over_head_costs)" +
             " VALUES ( '" + newDept.dept_name + "'," +
             newDept.over_head_costs + ")";
-        console.log(queryText);
         connection.query(queryText,
             function (err, res) {
                 if (err) {
@@ -156,14 +154,12 @@ function addNewDepartment() {
                 }
                 queryText = "SELECT * FROM bamazon_db.department_t " +
                     "WHERE department_name = '" + newDept.dept_name + "'";
-                console.log(queryText);
                 connection.query(queryText,
                     function (err, res) {
                         if (err) {
                             throw err;
                             console.log(err);
                         }
-                        console.log(JSON.stringify(res));
                         console.log("-----------------------------------------------------");
                         console.log(" ");
                         AddDeptTable.push([
@@ -173,8 +169,9 @@ function addNewDepartment() {
                                 code: 'USD'
                             })
                         ]);
-                        console.log(AddDeptTable.toString());
+                      
                         console.log("New Department Added ");
+                        console.log(AddDeptTable.toString());
                         console.log(" ");
                         console.log("-----------------------------------------------------");
                         inquireForMoreSupervising();
